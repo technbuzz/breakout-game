@@ -1,0 +1,11 @@
+{
+  "name": "breakout",
+  "version": "0.0.1",
+  "description": "Html5 Game Development",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Samiullah",
+  "license": "ISC"
+}
