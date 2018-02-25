@@ -14,6 +14,43 @@ let paddleX = (canvas.width - paddleWidth) / 2;
 let leftPressed = false;
 let rightPressed = false;
 
+const brickRowCount = 3;
+const brickColumnCount = 3;
+const brickWidth = 75;
+const brickHeight = 20;
+const brickPadding = 10;
+const brickOffsetTop = 30;
+const brickOffsetLeft = 30;
+
+const bricks = [];
+
+for (let col = 0; col < brickColumnCount; col++) {
+  bricks[col] = [];
+  for (let row = 0; row < brickRowCount; row++) {
+    bricks[col][row] = {x:0, y: 0, status: 1}
+  }
+}
+
+function drawBricks(){
+  for (let col = 0; col < brickColumnCount; col++) {
+    for (let row = 0; row < brickRowCount; row++) {
+      if(bricks[col][row].status){
+
+        let brickX = (col * (brickWidth+brickPadding) + brickOffsetLeft);
+        let brickY = (row * (brickHeight+brickPadding) + brickOffsetTop);
+        bricks[col][row].x = brickX;
+        bricks[col][row].y = brickY;
+        ctx.beginPath();
+        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      } //if bricks.status
+    } // loop rows 
+  } // loop cols
+} // drawBricks
+
+
 function drawPaddle() {
   ctx.beginPath();
   ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
@@ -34,6 +71,8 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
   drawPaddle();
+  drawBricks();
+  collisionDetection();
 
   if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
     dx = -dx;
@@ -57,6 +96,25 @@ function draw() {
   }
   ballX += dx;
   ballY += dy;
+}
+
+function collisionDetection(){
+  for (let col = 0; col < brickColumnCount; col++) {
+    for (let row = 0; row < brickRowCount; row++) {
+      let b = bricks[col][row];
+      if(b.status){
+        if(ballX > b.x && ballX < b.x + brickWidth && ballY > b.y && ballY < b.y + brickHeight){
+          dy = -dy;
+          b.status = 0;
+          score++;
+          if(score == brickRowCount * brickColumnCount){
+            alert("YOU WIN, CONGRATS");
+            document.location.reload();
+          }
+        }
+      }
+    }
+  }
 }
 
 
