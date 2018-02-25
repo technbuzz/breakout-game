@@ -22,6 +22,22 @@ const brickPadding = 10;
 const brickOffsetTop = 30;
 const brickOffsetLeft = 30;
 
+let score = 0;
+let lives = 3;
+let animationId;
+let paused = false;
+
+function drawScore(){
+  ctx.font = '16px Arial';
+  ctx.fillStyle = "#0095DD";
+  ctx.fillText(`Score: ${score}`, 8, 20);
+}
+
+function drawLives(){
+  ctx.fillText(`Lives: ${lives}`, canvas.width-65, 20);
+}
+
+
 const bricks = [];
 
 for (let col = 0; col < brickColumnCount; col++) {
@@ -74,6 +90,10 @@ function draw() {
   drawBricks();
   collisionDetection();
 
+  drawScore();
+  drawLives();
+
+
   if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
     dx = -dx;
   }
@@ -84,8 +104,17 @@ function draw() {
     if (ballX > paddleX && ballX < paddleX + paddleWidth) {
       dy = -dy;
     } else {
-      alert("GAME OVER");
-      document.location.reload();
+      lives--;
+      if(!lives){
+        alert("GAME OVER");
+        document.location.reload();
+      } else {
+        ballX = canvas.width/2;
+        ballY = canvas.height-30;
+        dx = 2;
+        dy = 2;
+        paddleX = (canvas.width-paddleWidth)/2;
+      }
     }
   }
 
@@ -96,6 +125,9 @@ function draw() {
   }
   ballX += dx;
   ballY += dy;
+
+  animationId = requestAnimationFrame(draw);
+
 }
 
 function collisionDetection(){
@@ -135,8 +167,26 @@ function keyUpHandler(e) {
 }
 
 
+function mouseMoveHandler(e) {
+  let relativeX = e.clientX - canvas.offsetLeft;
+  if(relativeX > 0 && relativeX < canvas.width){
+    paddleX = relativeX - paddleWidth/2;
+  }
+}
+
+function toggleGameplay(){
+  if(paused){
+    draw();
+    paused = false;
+  } else {
+    cancelAnimationFrame(animationId);
+    paused = true;
+  }
+}
+
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
+document.addEventListener('mousemove', mouseMoveHandler, false);
+document.addEventListener('click', toggleGameplay, false);
 
-
-setInterval(draw, 10);
+draw();
