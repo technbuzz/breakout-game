@@ -15,12 +15,12 @@ let leftPressed = false;
 let rightPressed = false;
 
 const brickRowCount = 3;
-const brickColumnCount = 3;
+const brickColumnCount = 5;
 const brickWidth = 75;
 const brickHeight = 20;
-const brickPadding = 10;
+const brickPadding = 2;
 const brickOffsetTop = 30;
-const brickOffsetLeft = 30;
+const brickOffsetLeft = 15;
 
 let score = 0;
 let lives = 3;
